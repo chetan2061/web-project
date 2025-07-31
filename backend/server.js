@@ -1,35 +1,3 @@
-// const express = require("express");
-// const path = require("path");
-// const app = express();
-// const port = 3000;
-
-// app.get("/", (req, res) => {
-//   res.sendFile(path.join(__dirname, "../frontend/index.html"));
-// });
-
-// app.use("/static", express.static(path.join(__dirname, "../frontend")));
-
-// app.get("/api/message", (req, res) => {
-//   res.json({ message: "Hello from the backend!" });
-// });
-
-// app.listen(port, () => {
-//   console.log(`Server is running on http://localhost:${port}`);
-// });
-
-// // post reqiest
-// // app.post("/api/login",(req,res))
-
-// app.post("/api/login", (req, res) => {
-//   if (req.body.email === "chetan@gmail.com") {
-//     res.send("Login successful: ");
-//   } else {
-//     res.send("Invalid email or password");
-//   }
-// });
-
-// app.listen(3000, () => console.log("Server running on port 3000"));
-
 const express = require("express");
 const path = require("path");
 const app = express();
@@ -73,4 +41,33 @@ app.post("/api/login", (req, res) => {
 
 app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
+});
+
+// pass change
+
+app.put("/api/changePassword/:id", (req, res) => {
+  const { id } = req.params;
+  const { newPassword, confirmPassword } = req.body;
+
+  if (!newPassword || !confirmPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Both password fields are required!",
+    });
+  }
+
+  if (newPassword !== confirmPassword) {
+    return res.status(400).json({
+      success: false,
+      message: "Passwords do not match!",
+    });
+  }
+
+  // Simulate password update
+  return res.status(200).json({
+    success: true,
+    message: "Password successfully changed!",
+    userId: id,
+    newPassword: newPassword, // For demo only; do NOT return password in real apps!
+  });
 });
