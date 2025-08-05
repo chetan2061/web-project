@@ -63,7 +63,7 @@ app.put("/api/changePassword/:id", (req, res) => {
     });
   }
 
-  // Simulate password update
+  // Simulate password updatee
   return res.status(200).json({
     success: true,
     message: "Password successfully changed!",
