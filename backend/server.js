@@ -1,73 +1,33 @@
+// Simple Express Server
 const express = require("express");
-const path = require("path");
+const cors = require("cors");
 const app = express();
-const port = 3000;
 
-app.get("/", (req, res) => {
-  res.sendFile(path.join(__dirname, "../frontend/index.html"));
-});
-
-app.use("/static/css", express.static(path.join(__dirname, "../frontend/css")));
-app.use(
-  "/static/javascript",
-  express.static(path.join(__dirname, "../frontend/javascript"))
-);
+// Middleware
+app.use(cors());
 app.use(express.json());
 
-// API route
-app.get("/api/message", (req, res) => {
-  return res.json({ success: true, message: "Hello from the backend!!!" });
+// In-memory storage
+let tasks = [];
+
+// Get all tasks
+app.get("/api/tasks", (req, res) => {
+  res.json(tasks);
 });
 
-app.post("/api/login", (req, res) => {
-  const { email, password } = req.body;
+// Add new task
+app.post("/api/tasks", (req, res) => {
+  const task = {
+    id: Date.now(),
+    name: req.body.name,
+    status: req.body.status || "todo",
+  };
 
-  if (email !== "123@gmail.com")
-    return res
-      .status(400)
-      .json({ success: false, message: "email not found!" });
-
-  if (password !== "123")
-    return res
-      .status(400)
-      .json({ success: false, message: "Password not matched!" });
-
-  return res.status(200).json({
-    success: true,
-    message: "Login successful!",
-    data: { email, password },
-  });
+  tasks.push(task);
+  res.json(task);
 });
 
-app.listen(port, () => {
-  console.log(`Server is running on http://localhost:${port}`);
-});
-
-// pass change
-
-app.put("/api/changePassword/:id", (req, res) => {
-  const { id } = req.params;
-  const { newPassword, confirmPassword } = req.body;
-
-  if (!newPassword || !confirmPassword) {
-    return res.status(400).json({
-      success: false,
-      message: "Both password fields are required!",
-    });
-  }
-
-  if (newPassword !== confirmPassword) {
-    return res.status(400).json({
-      success: false,
-      message: "Passwords do not match!",
-    });
-  }
-
-  // Simulate password updatee
-  return res.status(200).json({
-    success: true,
-    message: "Password successfully changed!",
-    userId: id,
-    newPassword: newPassword, // For demo only; do NOT return password in real apps!
-  });
+// Start server
+app.listen(3000, () => {
+  console.log("Server running on port 3000");
 });
